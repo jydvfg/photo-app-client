@@ -3,7 +3,7 @@ import axios from "axios";
 
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
-const CreateUserForm = () => {
+const SignupPage = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -132,4 +132,4 @@ const CreateUserForm = () => {
   );
 };
 
-export default CreateUserForm;
+export default SignupPage;
