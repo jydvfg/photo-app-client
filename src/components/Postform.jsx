@@ -9,63 +9,74 @@ const PostForm = () => {
   const [tags, setTags] = useState("");
   const [nsfw, setNsfw] = useState(false);
   const [error, setError] = useState(null);
-
   const [postImage, setPostImage] = useState("");
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
+
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+
     setFileToBase(file);
   };
 
   const setFileToBase = (file) => {
     const reader = new FileReader();
-
     reader.readAsDataURL(file);
 
     reader.onloadend = () => {
       setPostImage(reader.result);
     };
   };
-  console.log("Is post url received => ", postImage.slice(0, 21));
-  const handleSubmit = async (event) => {
+
+  const handlePostSubmit = async (event) => {
     event.preventDefault();
 
-    if (!title || !description || !tags || !postImage) {
-      setError("Please fill in all fields");
+    if (!title || !description || !postImage) {
+      setError("Please fill in all necessary fields");
       return;
     }
 
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-      formData.append("tags", tags);
-      formData.append("nsfw", nsfw);
-      formData.append("imageUrl", postImage);
+      const storedToken = localStorage.getItem("authToken");
+      if (!storedToken) {
+        setError("Authentication token not found");
+        return;
+      }
 
-      // Get user's current location using Geolocation API
+      console.log("Stored token =>", storedToken);
+
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
 
-          formData.append("latitude", latitude);
-          formData.append("longitude", longitude);
+          try {
+            await axios.post(
+              `${backendUrl}/posts`,
+              {
+                latitude,
+                longitude,
+                title,
+                description,
+                tags,
+                nsfw,
+                postImage,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${storedToken}`,
+                },
+              }
+            );
 
-          // Post data to backend
-          await axios.post(`${backendUrl}/posts`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-
-          // Clear form fields after successful post
-          setTitle("");
-          setDescription("");
-          setTags("");
-          setNsfw(false);
-          setPostImage(null);
+            setTitle("");
+            setDescription("");
+            setTags("");
+            setNsfw(false);
+            setPostImage(null);
+          } catch (error) {
+            setError("Failed to post");
+          }
         });
       }
     } catch (error) {
@@ -77,7 +88,7 @@ const PostForm = () => {
     <div>
       <h2>Create a New Post</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handlePostSubmit}>
         <div>
           <label>Title:</label>
           <input
@@ -110,8 +121,13 @@ const PostForm = () => {
           />
         </div>
         <div>
-          <label>Image:</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <input
+            onChange={handleImage}
+            type="file"
+            id="formupload-postImage"
+            name="postImage"
+            onClick={() => document.getElementById("formupload-postImage")}
+          />
         </div>
         <button type="submit">Submit</button>
       </form>
