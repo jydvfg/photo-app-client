@@ -6,6 +6,7 @@ import { AuthProviderWrapper } from "./context/auth.context";
 import SignupPage from "./pages/SignupPage";
 import UserProfilePage from "./pages/UserPage";
 import LandingPage from "./pages/LandingPage";
+import PostPage from "./pages/PostPage";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/posts/:postId" element={<PostPage />} />
           <Route path="/profile" element={<UserProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />

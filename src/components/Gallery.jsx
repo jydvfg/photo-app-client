@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import { Link } from "react-router-dom";
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
 const Gallery = () => {
@@ -31,11 +31,9 @@ const Gallery = () => {
   };
 
   useEffect(() => {
-    fetchPosts()
-      .then((res) => console.log(res.data))
-      .catch((err) => {
-        console.error(err);
-      });
+    fetchPosts().catch((err) => {
+      console.error(err);
+    });
 
     const refreshInterval = setInterval(() => {
       const now = new Date();
@@ -51,7 +49,9 @@ const Gallery = () => {
     <div className="gallery">
       {posts.map((post) => (
         <div className="gallery-item" key={post._id}>
-          <img src={post.imageUrl} alt={post.title} />
+          <Link to={`/posts/${post._id}`}>
+            <img src={post.imageUrl} alt={post.title} />
+          </Link>
         </div>
       ))}
     </div>
