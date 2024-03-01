@@ -31,7 +31,7 @@ export default function LandingPage() {
   }, [isLoggedIn]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading indicator while verifying authentication
+    return <div>Loading...</div>;
   }
 
   return (
