@@ -1,49 +1,58 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 import axios from "axios";
+
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
-function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { logOutUser } = useContext(AuthContext);
+function Navbar({ showPostForm, togglePostForm }) {
+  const { isLoggedIn, logOutUser, user } = useContext(AuthContext);
+  const [userObject, setUserObject] = useState(null);
 
   useEffect(() => {
-    const checkAuthentication = async () => {
-      try {
-        const storedToken = localStorage.getItem("authToken");
-        const response = await axios.get(`${backendUrl}/auth/verify`, {
-          headers: { Authorization: `Bearer ${storedToken}` },
-        });
-        if (response.data.email) {
-          setIsLoggedIn(true);
-        }
-      } catch (error) {
-        console.error("Error checking authentication:", error);
+    if (isLoggedIn && user) {
+      const storedToken = localStorage.getItem("authToken");
+
+      if (storedToken) {
+        axios
+          .get(`${backendUrl}/users/${user.username}`, {
+            headers: { Authorization: `Bearer ${storedToken}` },
+          })
+          .then((response) => {
+            setUserObject(response.data);
+          })
+          .catch((error) => {
+            console.log("error while fetching user =>", error);
+          });
       }
-    };
-    checkAuthentication();
-  }, [isLoggedIn]);
+    }
+  }, [isLoggedIn, user]);
+
   return (
-    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-      <nav className="navbar">
-        <Link to="/">
-          <button className="button">Home</button>
+    <nav className="navbar">
+      <Link to="/">
+        <button className="button">Home</button>
+      </Link>
+      {isLoggedIn ? (
+        <button className="button" onClick={logOutUser}>
+          Logout
+        </button>
+      ) : (
+        <Link to="/login">
+          <button className="button">Login</button>
         </Link>
-        <Link to="/profile">
-          <button className="button">Profile</button>
-        </Link>
-        {isLoggedIn ? (
-          <button className="button" onClick={logOutUser}>
-            Logout
-          </button>
-        ) : (
-          <Link to="/login">
-            <button className="button">Login</button>
+      )}
+      <button className="button" onClick={togglePostForm}>
+        {showPostForm ? "-" : "+"}
+      </button>
+      {isLoggedIn && userObject && (
+        <div className="navbar-profile-image">
+          <Link to={`/users/${user.username}`}>
+            {userObject.image && <img src={userObject.image} alt="User" />}
           </Link>
-        )}
-      </nav>
-    </AuthContext.Provider>
+        </div>
+      )}
+    </nav>
   );
 }
 

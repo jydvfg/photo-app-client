@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import PostForm from "../components/Postform";
 import SignupPage from "./SignupPage";
-import Gallery from "../components/Gallery";
+import Grid from "../components/Gallery";
 import { AuthContext } from "../context/auth.context";
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
@@ -36,7 +36,7 @@ export default function LandingPage() {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-      {isLoggedIn ? <Gallery /> : <SignupPage />}
+      {isLoggedIn ? <Grid /> : <SignupPage />}
     </AuthContext.Provider>
   );
 }

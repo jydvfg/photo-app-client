@@ -1,10 +1,36 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Gallery } from "react-grid-gallery";
 import { Link } from "react-router-dom";
+
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
-const Gallery = () => {
+const Grid = () => {
+  const [images, setImages] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setUserLocation({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          },
+          (error) => {
+            console.error("Error getting user location:", error);
+          }
+        );
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    };
+
+    getUserLocation();
+  }, []);
 
   const fetchPosts = async () => {
     try {
@@ -24,7 +50,28 @@ const Gallery = () => {
         return postTimestamp > twentyFourHoursAgo;
       });
 
+      const transformedImages = filteredPosts.map((post) => ({
+        src: post.imageUrl,
+        thumbnail: post.imageUrl,
+        thumbnailHeight: 150,
+        isSelected: false,
+        caption: post.title,
+        distance: userLocation
+          ? calculateDistance(
+              userLocation.latitude,
+              userLocation.longitude,
+              post.location.coordinates[0],
+              post.location.coordinates[1]
+            )
+          : null,
+      }));
+
+      const sortedImages = userLocation
+        ? transformedImages.sort((a, b) => a.distance - b.distance)
+        : transformedImages;
+
       setPosts(filteredPosts);
+      setImages(sortedImages);
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
@@ -43,19 +90,46 @@ const Gallery = () => {
     }, 1000 * 60);
 
     return () => clearInterval(refreshInterval);
-  }, []);
+  }, [userLocation]);
+
+  const handleClick = (index) => {
+    const clickedImageUrl = images[index].src;
+    const matchedPost = posts.find((post) => post.imageUrl === clickedImageUrl);
+    if (matchedPost) {
+      window.location.href = `/posts/${matchedPost._id}`;
+    }
+  };
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  };
+
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
 
   return (
-    <div className="gallery">
-      {posts.map((post) => (
-        <div className="gallery-item" key={post._id}>
-          <Link to={`/posts/${post._id}`}>
-            <img src={post.imageUrl} alt={post.title} />
-          </Link>
-        </div>
-      ))}
-    </div>
+    <Gallery
+      images={images}
+      enableImageSelection={false}
+      margin={10}
+      enableLightbox={true}
+      rowHeight={300}
+      backdropClosesModal={true}
+      onClick={handleClick}
+    />
   );
 };
 
-export default Gallery;
+export default Grid;

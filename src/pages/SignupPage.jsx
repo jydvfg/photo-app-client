@@ -9,12 +9,13 @@ const SignupPage = () => {
     password: "",
     name: "",
     username: "",
-    image: "https://i.imgur.com/r8bo8u7.png", // Default image URL
+    image: "https://i.imgur.com/GvsgVco.jpeg",
     isPublic: false,
     about: "",
     isAdmin: false,
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -24,17 +25,17 @@ const SignupPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await axios.post(`${backendUrl}/auth/signup`, formData);
       console.log("User created:", response.data);
-      // Clear form after successful submission
       setFormData({
         email: "",
         password: "",
         name: "",
         username: "",
-        image: "https://i.imgur.com/r8bo8u7.png", // Reset to default image URL
+        image: "https://i.imgur.com/GvsgVco.jpeg",
         isPublic: false,
         about: "",
         isAdmin: false,
@@ -44,6 +45,7 @@ const SignupPage = () => {
       console.error("Error creating user:", err);
       setError("Failed to create user");
     }
+    setLoading(false);
   };
 
   return (
@@ -117,16 +119,9 @@ const SignupPage = () => {
             onChange={handleChange}
           />
         </div>
-        <div>
-          <label>Is Admin:</label>
-          <input
-            type="checkbox"
-            name="isAdmin"
-            checked={formData.isAdmin}
-            onChange={handleChange}
-          />
-        </div>
-        <button type="submit">Create User</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating User..." : "Create User"}
+        </button>
       </form>
     </div>
   );

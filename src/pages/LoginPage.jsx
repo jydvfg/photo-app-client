@@ -9,9 +9,7 @@ function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState(undefined);
-
   const navigate = useNavigate();
-
   const { storeToken, authenticateUser } = useContext(AuthContext);
 
   const handleEmail = (e) => setEmail(e.target.value);
@@ -25,7 +23,6 @@ function LoginPage() {
       .post(`${backendUrl}/auth/login`, requestBody)
       .then((response) => {
         console.log("JWT token", response.data.authToken);
-
         storeToken(response.data.authToken);
         authenticateUser();
         navigate("/");
@@ -88,7 +85,9 @@ function LoginPage() {
         </button>
       </form>
 
-      {errorMessage && <p className="error-message">{errorMessage}</p>}
+      {errorMessage && (
+        <p className="error-message text-red-600">{errorMessage}</p>
+      )}
 
       <p className="mt-10 mb-2">Don&apos;t have an account yet?</p>
       <Link to={"/signup"}> Sign Up</Link>

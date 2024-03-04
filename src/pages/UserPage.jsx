@@ -1,5 +1,7 @@
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
+import EditProfile from "../components/EditUser";
 import { AuthContext } from "../context/auth.context";
 
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
@@ -7,14 +9,18 @@ const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 function UserProfilePage() {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState(undefined);
+  const [editMode, setEditMode] = useState(false);
+  const { userId } = useParams();
+  const { isLoggedIn, user } = useContext(AuthContext);
+  const [isLoggedInUser, setIsLoggedInUser] = useState(false);
+
   const getUser = () => {
     const storedToken = localStorage.getItem("authToken");
 
     if (storedToken) {
       axios
-        .get(`${backendUrl}/users/${user._id}`, {
+        .get(`${backendUrl}/users/${userId}`, {
           headers: { Authorization: `Bearer ${storedToken}` },
         })
         .then((response) => {
@@ -30,11 +36,33 @@ function UserProfilePage() {
       setErrorMessage("User not logged in");
     }
   };
+
+  const getLoggedInUser = () => {
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) {
+      axios
+        .get(`${backendUrl}/auth/verify`, {
+          headers: { Authorization: `Bearer ${storedToken}` },
+        })
+        .then((response) => {
+          setIsLoggedInUser(response.data);
+        })
+        .catch((error) => {
+          console.error("Error verifying authentication:", error);
+        });
+    } else {
+      console.log("User is not authenticated");
+    }
+  };
+
   useEffect(() => {
-    setTimeout(() => {
-      getUser();
-    }, 1000);
-  }, [user]);
+    getUser();
+    getLoggedInUser();
+  }, [userId]);
+
+  const toggleEditMode = (mode) => {
+    setEditMode(mode);
+  };
 
   if (errorMessage) return <div>{errorMessage}</div>;
 
@@ -51,6 +79,8 @@ function UserProfilePage() {
               className="profile-pic"
             />
             <h1 className="profile-name">{userProfile.name}</h1>
+            <h2>{userProfile.username}</h2>
+            <p>{userProfile.about}</p>
 
             {userProfile.isPublic && (
               <div className="profile-email">
@@ -61,6 +91,15 @@ function UserProfilePage() {
             )}
           </>
         )}
+      </div>
+      <div>
+        {isLoggedIn && isLoggedInUser.username === userId ? (
+          editMode ? (
+            <EditProfile toggleEditMode={toggleEditMode} />
+          ) : (
+            <button onClick={() => toggleEditMode(true)}>Edit Profile</button>
+          )
+        ) : null}
       </div>
     </div>
   );
