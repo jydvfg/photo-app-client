@@ -76,39 +76,41 @@ function UserProfilePage() {
 
   return (
     <div className="content">
-      <div>
-        <img
-          src={userProfile.image}
-          alt="profile-photo"
-          className="profile-pic"
-        />
-        <h1 className="profile-name">{userProfile.name}</h1>
-        <h2>{userProfile.username}</h2>
-        <p>{userProfile.about}</p>
+      <div className="user-page">
+        <div>
+          <img
+            src={userProfile.image}
+            alt="profile-photo"
+            className="profile-pic"
+          />
+          <h1 className="profile-name">{userProfile.name}</h1>
+          <h2>{userProfile.username}</h2>
+          <p>{userProfile.about}</p>
 
-        {userProfile.isPublic && (
-          <div className="profile-email">
-            <p>
-              <strong>Email:</strong> {userProfile.email}
-            </p>
-          </div>
+          {userProfile.isPublic && (
+            <div className="profile-email">
+              <p>
+                <strong>Email:</strong> {userProfile.email}
+              </p>
+            </div>
+          )}
+        </div>
+        <div>
+          {isLoggedIn && isLoggedInUser.username === userId ? (
+            editMode ? (
+              <EditProfile toggleEditMode={toggleEditMode} />
+            ) : (
+              <button onClick={() => toggleEditMode(true)}>Edit Profile</button>
+            )
+          ) : null}
+        </div>
+        {isLoggedIn && isLoggedInUser.username === userId && (
+          <>
+            <UserPosts idNum={idNum} />
+            <SavedPosts userId={userId} />
+          </>
         )}
       </div>
-      <div>
-        {isLoggedIn && isLoggedInUser.username === userId ? (
-          editMode ? (
-            <EditProfile toggleEditMode={toggleEditMode} />
-          ) : (
-            <button onClick={() => toggleEditMode(true)}>Edit Profile</button>
-          )
-        ) : null}
-      </div>
-      {isLoggedIn && isLoggedInUser.username === userId && (
-        <>
-          <UserPosts idNum={idNum} />
-          <SavedPosts userId={userId} />
-        </>
-      )}
     </div>
   );
 }

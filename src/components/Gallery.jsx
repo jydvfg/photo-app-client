@@ -127,11 +127,11 @@ const Grid = () => {
         enableImageSelection={false}
         margin={10}
         enableLightbox={true}
-        rowHeight={300}
+        rowHeight={275}
         backdropClosesModal={true}
-        tumbnailStyle={(item) => ({
-          filter: item.nsfw ? "blur(5px)" : "none",
-        })}
+        /* thumbnailStyle={(item) => ({
+          filter: item.nsfw ? "blur(10px)" : "none",
+        })}*/
         onClick={handleClick}
       />
     </div>

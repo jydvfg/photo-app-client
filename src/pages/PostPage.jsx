@@ -92,30 +92,40 @@ export default function PostPage() {
 
   return (
     <div className="content">
-      <div>
-        {post && (
-          <>
-            <img src={post.imageUrl} alt="photo" className="post-image" />
-          </>
-        )}
+      <div className="post-page">
+        <div>
+          {post && (
+            <>
+              <img src={post.imageUrl} alt="photo" className="post-image" />
+            </>
+          )}
+        </div>
+        <button onClick={savePost}>Save</button>
+        <Link to={`/users/${post.user.username}`}>
+          <h2>{post.user.username}</h2>
+        </Link>
+        <h3>{post.title}</h3>
+        <p>{post.description}</p>
+        <div className="tags-container">
+          {post.tags.map((tag, index) => (
+            <span key={index} className="tag-label">
+              {index > 0 && " "}
+              <em>{tag}</em>
+            </span>
+          ))}
+        </div>
+        <div className="comment-area">
+          <CommentList postId={postId} />
+          <CommentForm
+            postId={postId}
+            loggedInUser={loggedInUser}
+            onSuccess={handleCommentSuccess}
+          />
+        </div>
+        <Link to="/">
+          <button>Back</button>
+        </Link>
       </div>
-      <button onClick={savePost}>Save</button>
-      <Link to={`/users/${post.user.username}`}>
-        <h2>{post.user.username}</h2>
-      </Link>
-      <h3>{post.title}</h3>
-      <p>{post.description}</p>
-      <div className="comment-area">
-        <CommentList postId={postId} />
-        <CommentForm
-          postId={postId}
-          loggedInUser={loggedInUser}
-          onSuccess={handleCommentSuccess}
-        />
-      </div>
-      <Link to="/">
-        <button>Back</button>
-      </Link>
     </div>
   );
 }

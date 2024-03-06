@@ -1,16 +1,20 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
+import { AuthContext } from "../context/auth.context";
 
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
 const PostForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState({});
   const [nsfw, setNsfw] = useState(false);
   const [error, setError] = useState(null);
   const [postImage, setPostImage] = useState("");
   const [tagsDropdownCount, setTagsDropdownCount] = useState(1);
+  const [postId, setPostId] = useState("");
+  const { isLoggedIn, user } = useContext(AuthContext);
+  const storedToken = localStorage.getItem("authToken");
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -30,6 +34,7 @@ const PostForm = () => {
   const handlePostSubmit = async (event) => {
     event.preventDefault();
 
+    console.log("Button clicked !");
     if (!title || !description || !postImage) {
       setError("Please fill in all necessary fields");
       return;
@@ -38,13 +43,10 @@ const PostForm = () => {
     setError(null);
 
     try {
-      const storedToken = localStorage.getItem("authToken");
       if (!storedToken) {
         setError("Authentication token not found");
         return;
       }
-
-      console.log("Stored token =>", storedToken);
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(async (position) => {
@@ -59,7 +61,7 @@ const PostForm = () => {
                 longitude,
                 title,
                 description,
-                selectedTags,
+                tags: Object.values(selectedTags),
                 nsfw,
                 postImage,
               },
@@ -72,7 +74,7 @@ const PostForm = () => {
 
             setTitle("");
             setDescription("");
-            setSelectedTags("");
+            setSelectedTags([]);
             setNsfw(false);
             setPostImage(null);
           } catch (error) {
@@ -85,9 +87,10 @@ const PostForm = () => {
     }
   };
   const handleTagChange = (index, value) => {
-    const updatedTags = [...selectedTags];
-    updatedTags[index] = value;
-    setSelectedTags(updatedTags);
+    setSelectedTags((prevSelectedTags) => ({
+      ...prevSelectedTags,
+      [index]: value,
+    }));
   };
 
   const handleAddTagDropdown = () => {

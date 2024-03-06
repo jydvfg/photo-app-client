@@ -23,6 +23,19 @@ const SignupPage = () => {
     setFormData({ ...formData, [name]: val });
   };
 
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setFormData({ ...formData, image: reader.result });
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -94,12 +107,13 @@ const SignupPage = () => {
           />
         </div>
         <div>
-          <label>Image URL:</label>
+          <label>Profile Image:</label>
           <input
-            type="text"
+            type="file"
+            accept="image/*"
             name="image"
-            value={formData.image}
-            onChange={handleChange}
+            onChange={handleImage}
+            required
           />
         </div>
         <div>

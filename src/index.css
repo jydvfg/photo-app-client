@@ -53,7 +53,10 @@ body {
 }
 
 .landing-gallery {
-  width: 60vw;
+  width: 80vw;
+  padding-left: 5vw;
+  margin-left: 5vw;
+  padding-top: 5vh;
 }
 
 .gallery-item {
@@ -73,6 +76,12 @@ body {
 .your-posts {
   height: 20em;
   background: yellow;
+}
+.user-page {
+  padding-bottom: 10vh;
+}
+.post-page {
+  padding-bottom: 7vh;
 }
 
 .profile-pic {
@@ -145,6 +154,21 @@ nav li {
 nav li:last-child {
   margin-top: 15px;
   margin-right: 0;
+}
+.tags-container {
+  margin-top: 10px;
+}
+
+.tag-label {
+  font-style: italic;
+  background-color: #333333;
+  color: #f0f0f0;
+  padding: 5px;
+  border-radius: 10%;
+}
+
+.tag-label:not(:first-child) {
+  margin-left: 4px;
 }
 
 @media (max-width: 768px) {
