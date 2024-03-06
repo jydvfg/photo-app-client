@@ -6,10 +6,11 @@ const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 const PostForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [tags, setTags] = useState("");
+  const [selectedTags, setSelectedTags] = useState([]);
   const [nsfw, setNsfw] = useState(false);
   const [error, setError] = useState(null);
   const [postImage, setPostImage] = useState("");
+  const [tagsDropdownCount, setTagsDropdownCount] = useState(1);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -58,7 +59,7 @@ const PostForm = () => {
                 longitude,
                 title,
                 description,
-                tags,
+                selectedTags,
                 nsfw,
                 postImage,
               },
@@ -71,7 +72,7 @@ const PostForm = () => {
 
             setTitle("");
             setDescription("");
-            setTags("");
+            setSelectedTags("");
             setNsfw(false);
             setPostImage(null);
           } catch (error) {
@@ -83,9 +84,20 @@ const PostForm = () => {
       setError("Failed to post");
     }
   };
+  const handleTagChange = (index, value) => {
+    const updatedTags = [...selectedTags];
+    updatedTags[index] = value;
+    setSelectedTags(updatedTags);
+  };
+
+  const handleAddTagDropdown = () => {
+    if (tagsDropdownCount < 5) {
+      setTagsDropdownCount(tagsDropdownCount + 1);
+    }
+  };
 
   return (
-    <div>
+    <div className="post-form">
       <h2>Create a New Post</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handlePostSubmit}>
@@ -106,11 +118,54 @@ const PostForm = () => {
         </div>
         <div>
           <label>Tags:</label>
-          <input
-            type="text"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-          />
+          {[...Array(tagsDropdownCount)].map((_, index) => (
+            <div key={index}>
+              <select
+                value={selectedTags[index] || ""}
+                onChange={(e) => handleTagChange(index, e.target.value)}
+              >
+                <option value="">Select a tag</option>
+                {[
+                  "street",
+                  "portrait",
+                  "B&W",
+                  "adult",
+                  "architecture",
+                  "film",
+                  "digital",
+                  "lo-fi",
+                  "post-photography",
+                  "astro",
+                  "wildlife",
+                  "documentary",
+                  "sports",
+                  "macro",
+                  "landscape",
+                  "abstract",
+                  "event",
+                  "nature",
+                  "conceptual",
+                  "studio",
+                  "candid",
+                  "vernacular",
+                  "fine-art",
+                  "composite",
+                  "night",
+                  "fashion",
+                  "analoge",
+                  "medium-format",
+                  "35-mm",
+                ].map((tag) => (
+                  <option key={tag} value={tag}>
+                    {tag}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
+          <button type="button" onClick={handleAddTagDropdown}>
+            Add Tag
+          </button>
         </div>
         <div>
           <label>NSFW:</label>

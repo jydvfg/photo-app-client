@@ -1,12 +1,12 @@
+html,
 body {
+  height: 100%;
+}
+.content {
   font-family: "Lora", serif;
   margin: 0;
-  padding: 0;
   background-color: #f7f7f7;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  height: 93vh;
 }
 
 .profile-name {
@@ -16,13 +16,6 @@ body {
   font-style: normal;
 }
 
-.container {
-  max-width: 1200px;
-  padding: 20px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
 .header {
   text-align: center;
   margin-bottom: 20px;
@@ -30,12 +23,13 @@ body {
 
 .navbar {
   background-color: #ffffff;
-  padding: 10px 20px;
+  padding: 10px 10px;
   border-radius: 8px;
   float: left;
   display: flex;
   align-items: center;
   flex-direction: column;
+  height: 96vh;
 }
 .navbar img {
   height: 40px;
@@ -58,11 +52,8 @@ body {
   background-color: #f0f0f0;
 }
 
-.gallery {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  grid-gap: 20px;
+.landing-gallery {
+  width: 60vw;
 }
 
 .gallery-item {
@@ -79,14 +70,13 @@ body {
   display: block;
   border-radius: 8px;
 }
-
-.footer {
-  text-align: center;
-  margin-top: 20px;
+.your-posts {
+  height: 20em;
+  background: yellow;
 }
 
 .profile-pic {
-  width: 300px;
+  width: 150px;
   border-radius: 50%;
   height: auto;
 }
@@ -105,16 +95,83 @@ body button:hover {
   background-color: #f0f0f0;
 }
 
+.post-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: space-evenly;
+  font-family: "Libre Franklin", sans-serif;
+}
+
+.post-form form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 90%;
+}
+
+.post-form form > div {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
 .post-image {
   max-height: 700px;
 }
 
+footer {
+  background-color: #f0f0f0;
+  font-family: "Libre Franklin", sans-serif;
+  font-size: x-small;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+  text-align: center;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-evenly;
+}
+
+nav li {
+  margin-right: 20px;
+}
+
+nav li:last-child {
+  margin-top: 15px;
+  margin-right: 0;
+}
+
 @media (max-width: 768px) {
   .navbar {
+    height: auto;
     float: none;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+  }
+}
+
+@media (max-width: 768px) {
+  .post-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .post-form form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+  }
+  .post-image {
+    max-width: 600px;
   }
 }

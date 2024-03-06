@@ -36,7 +36,7 @@ export default function LandingPage() {
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-      {isLoggedIn ? <Grid /> : <SignupPage />}
+      <div className="content">{isLoggedIn ? <Grid /> : <SignupPage />}</div>
     </AuthContext.Provider>
   );
 }

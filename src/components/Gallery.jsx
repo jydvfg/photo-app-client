@@ -56,6 +56,7 @@ const Grid = () => {
         thumbnailHeight: 150,
         isSelected: false,
         caption: post.title,
+        nsfw: post.nsfw,
         distance: userLocation
           ? calculateDistance(
               userLocation.latitude,
@@ -120,15 +121,20 @@ const Grid = () => {
   };
 
   return (
-    <Gallery
-      images={images}
-      enableImageSelection={false}
-      margin={10}
-      enableLightbox={true}
-      rowHeight={300}
-      backdropClosesModal={true}
-      onClick={handleClick}
-    />
+    <div className="landing-gallery">
+      <Gallery
+        images={images}
+        enableImageSelection={false}
+        margin={10}
+        enableLightbox={true}
+        rowHeight={300}
+        backdropClosesModal={true}
+        tumbnailStyle={(item) => ({
+          filter: item.nsfw ? "blur(5px)" : "none",
+        })}
+        onClick={handleClick}
+      />
+    </div>
   );
 };
 

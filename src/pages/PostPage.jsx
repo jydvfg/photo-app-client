@@ -91,7 +91,7 @@ export default function PostPage() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="post-body">
+    <div className="content">
       <div>
         {post && (
           <>

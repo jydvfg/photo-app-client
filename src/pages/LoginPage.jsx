@@ -22,7 +22,6 @@ function LoginPage() {
     axios
       .post(`${backendUrl}/auth/login`, requestBody)
       .then((response) => {
-        console.log("JWT token", response.data.authToken);
         storeToken(response.data.authToken);
         authenticateUser();
         navigate("/");
@@ -34,7 +33,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="CohortCreatePage p-8 pb-16 mb-10 mt-10 rounded-lg shadow-md flex flex-col h-full relative w-full max-w-3xl mx-auto">
+    <div className="content">
       <div className="flex justify-center bg-white items-center mb-4 pt-8 absolute top-0 left-0 right-0 py-2 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 border-b border-gray-300 shadow-sm"></div>
 
       <form
