@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Gallery } from "react-grid-gallery";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
@@ -9,6 +9,7 @@ const Grid = () => {
   const [images, setImages] = useState([]);
   const [posts, setPosts] = useState([]);
   const [userLocation, setUserLocation] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUserLocation = () => {
@@ -97,7 +98,7 @@ const Grid = () => {
     const clickedImageUrl = images[index].src;
     const matchedPost = posts.find((post) => post.imageUrl === clickedImageUrl);
     if (matchedPost) {
-      window.location.href = `/posts/${matchedPost._id}`;
+      navigate(`/posts/${matchedPost._id}`);
     }
   };
 
