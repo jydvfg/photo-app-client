@@ -2,12 +2,14 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
 function Navbar({ showPostForm, togglePostForm }) {
   const { isLoggedIn, logOutUser, user } = useContext(AuthContext);
   const [userObject, setUserObject] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoggedIn && user) {
@@ -27,14 +29,18 @@ function Navbar({ showPostForm, togglePostForm }) {
       }
     }
   }, [isLoggedIn, user]);
+  const handleLogout = () => {
+    logOutUser();
+    navigate("/login"); // Refresh the page after logout
+  };
 
   return (
     <nav className="navbar">
       <Link to="/">
-        <button className="button">Home</button>
+        <img src="https://res.cloudinary.com/dywpr7p7g/image/upload/v1710064786/dqcjyod3tv1htogyg0ii.png" />
       </Link>
       {isLoggedIn ? (
-        <button className="button" onClick={logOutUser}>
+        <button className="button" onClick={handleLogout}>
           Logout
         </button>
       ) : (

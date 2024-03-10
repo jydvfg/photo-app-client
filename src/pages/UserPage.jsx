@@ -68,7 +68,7 @@ function UserProfilePage() {
   }, [userId]);
 
   const toggleEditMode = (mode) => {
-    setEditMode(mode);
+    setEditMode((prevMode) => !prevMode);
   };
 
   if (errorMessage) return <div>{errorMessage}</div>;

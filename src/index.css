@@ -4,7 +4,7 @@ body {
 }
 .content {
   font-family: "Lora", serif;
-  margin: 0;
+  margin-left: 120px;
   background-color: #f7f7f7;
   height: 93vh;
 }
@@ -30,6 +30,7 @@ body {
   align-items: center;
   flex-direction: column;
   height: 96vh;
+  position: fixed;
 }
 .navbar img {
   height: 40px;
@@ -47,6 +48,11 @@ body {
   font-size: 16px;
   cursor: pointer;
 }
+.field-info {
+  font-size:smaller; 
+  color: #333; 
+  font-style: italic; 
+}
 
 .button:hover {
   background-color: #f0f0f0;
@@ -54,9 +60,7 @@ body {
 
 .landing-gallery {
   width: 80vw;
-  padding-left: 5vw;
-  margin-left: 5vw;
-  padding-top: 5vh;
+  padding-top: 10px;
 }
 
 .gallery-item {
@@ -88,6 +92,8 @@ body {
   width: 150px;
   border-radius: 50%;
   height: auto;
+    display: block;
+  margin: 0 auto;
 }
 body button {
   background-color: transparent;
@@ -105,6 +111,7 @@ body button:hover {
 }
 
 .post-form {
+  margin-left: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -134,7 +141,7 @@ footer {
   font-size: x-small;
   position: fixed;
   bottom: 0;
-  width: 100%;
+  width: 100vw;
   z-index: 999;
   text-align: center;
 }
@@ -172,13 +179,25 @@ nav li:last-child {
 }
 
 @media (max-width: 768px) {
-  .navbar {
-    height: auto;
+   .navbar {
+    padding: 0px 0px; 
+    height: 50px;
     float: none;
+    width: 90%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
+    position: sticky;
+    top: 0; 
+    z-index: 1000; 
+  }
+  .content {
+    margin-left: 5px;
+    width: 80%;
+  }
+  footer {
+    width: 90%;
   }
 }
 
@@ -196,6 +215,6 @@ nav li:last-child {
     width: 80%;
   }
   .post-image {
-    max-width: 600px;
+    max-width: 400px;
   }
 }

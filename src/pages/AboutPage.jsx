@@ -3,11 +3,14 @@ import React from "react";
 const About = () => {
   return (
     <div className="content">
+      <img src="https://res.cloudinary.com/dywpr7p7g/image/upload/v1710064786/dqcjyod3tv1htogyg0ii.png" style={{height:"200px", }}/>
+
       <h2>About El Sexo</h2>
       <p>
-        El Sexo is a photography sharing app that puts pictures and photographers front
-        and center. Unlike other social media platforms, there are no follows or
-        likes; instead, users are encouraged to save the pictures they like.
+        El Sexo is a photography sharing app that puts pictures and
+        photographers front and center. Unlike other social media platforms,
+        there are no follows or likes; instead, users are encouraged to save the
+        pictures they like.
       </p>
       <p>
         The app's feed refreshes every 24 hours, presenting a new set of

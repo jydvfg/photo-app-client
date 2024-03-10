@@ -1,24 +1,25 @@
-import { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 
 const backendUrl = import.meta.env.VITE_APP_BACKEND_URL;
 
-const PostForm = () => {
+const PostForm = ({ onSuccess }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedTags, setSelectedTags] = useState({});
   const [nsfw, setNsfw] = useState(false);
   const [error, setError] = useState(null);
   const [postImage, setPostImage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [tagsDropdownCount, setTagsDropdownCount] = useState(1);
-  const [postId, setPostId] = useState("");
   const { isLoggedIn, user } = useContext(AuthContext);
   const storedToken = localStorage.getItem("authToken");
+  const navigate = useNavigate();
 
   const handleImage = (e) => {
     const file = e.target.files[0];
-
     setFileToBase(file);
   };
 
@@ -33,10 +34,13 @@ const PostForm = () => {
 
   const handlePostSubmit = async (event) => {
     event.preventDefault();
+    if (loading) return;
 
-    console.log("Button clicked !");
+    setLoading(true);
+
     if (!title || !description || !postImage) {
       setError("Please fill in all necessary fields");
+      setLoading(false);
       return;
     }
 
@@ -45,6 +49,7 @@ const PostForm = () => {
     try {
       if (!storedToken) {
         setError("Authentication token not found");
+        setLoading(false);
         return;
       }
 
@@ -77,15 +82,21 @@ const PostForm = () => {
             setSelectedTags([]);
             setNsfw(false);
             setPostImage(null);
+            setLoading(false);
+            onSuccess();
+            navigate("/");
           } catch (error) {
             setError("Failed to post");
+            setLoading(false);
           }
         });
       }
     } catch (error) {
       setError("Failed to post");
+      setLoading(false);
     }
   };
+
   const handleTagChange = (index, value) => {
     setSelectedTags((prevSelectedTags) => ({
       ...prevSelectedTags,
@@ -105,18 +116,36 @@ const PostForm = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handlePostSubmit}>
         <div>
-          <label>Title:</label>
+          <label>
+            Title<span>*</span>:
+            <br />
+            <span
+              style={{ fontSize: "12px", color: "#666", fontStyle: "italic" }}
+            >
+              (Max 20 characters)
+            </span>
+          </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            required
           />
         </div>
         <div>
-          <label>Description:</label>
+          <label>
+            Description<span>*</span>:
+            <br />
+            <span
+              style={{ fontSize: "12px", color: "#666", fontStyle: "italic" }}
+            >
+              (Max 100 characters)
+            </span>
+          </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
           />
         </div>
         <div>
@@ -179,15 +208,21 @@ const PostForm = () => {
           />
         </div>
         <div>
-          <input
-            onChange={handleImage}
-            type="file"
-            id="formupload-postImage"
-            name="postImage"
-            onClick={() => document.getElementById("formupload-postImage")}
-          />
+          <label>
+            Post Image<span>*</span>:
+            <br />
+            <span
+              style={{ fontSize: "12px", color: "#666", fontStyle: "italic" }}
+            >
+              (Max size: 3 MB)
+            </span>
+          </label>
+          <input type="file" accept="image/*" onChange={handleImage} required />
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit" disabled={loading}>
+          {" "}
+          {loading ? "Loading..." : "Submit"}{" "}
+        </button>
       </form>
     </div>
   );
