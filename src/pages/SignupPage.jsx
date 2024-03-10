@@ -56,7 +56,7 @@ const SignupPage = () => {
       setError("");
     } catch (err) {
       console.error("Error creating user:", err);
-      setError("Failed to create user");
+      setError(err.response.data.message);
     }
     setLoading(false);
   };
@@ -67,7 +67,9 @@ const SignupPage = () => {
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email:</label>
+          <label>
+            Email<span>*</span>:
+          </label>
           <input
             type="email"
             name="email"
@@ -77,17 +79,23 @@ const SignupPage = () => {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label>
+            Password<span>*</span>:
+          </label>
           <input
             type="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
+            title="Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter."
             required
           />
         </div>
         <div>
-          <label>Name:</label>
+          <label>
+            Name<span>*</span>:
+          </label>
           <input
             type="text"
             name="name"
@@ -97,17 +105,23 @@ const SignupPage = () => {
           />
         </div>
         <div>
-          <label>Username:</label>
+          <label>
+            Username<span>*</span>:
+          </label>
           <input
             type="text"
             name="username"
             value={formData.username}
             onChange={handleChange}
+            maxLength={10}
             required
           />
+          <span className="field-info">Maximum 10 characters</span>
         </div>
         <div>
-          <label>Profile Image:</label>
+          <label>
+            Profile Image<span>*</span>:
+          </label>
           <input
             type="file"
             accept="image/*"
@@ -115,6 +129,7 @@ const SignupPage = () => {
             onChange={handleImage}
             required
           />
+          <span className="field-info">1:1 format, max. 3MB</span>
         </div>
         <div>
           <label>About:</label>
@@ -122,7 +137,9 @@ const SignupPage = () => {
             name="about"
             value={formData.about}
             onChange={handleChange}
+            maxLength={150}
           />
+          <span className="field-info">Maximum 150 characters</span>
         </div>
         <div>
           <label>Is Public:</label>
@@ -132,6 +149,7 @@ const SignupPage = () => {
             checked={formData.isPublic}
             onChange={handleChange}
           />
+          <span className="field-info">Share your contact details</span>
         </div>
         <button type="submit" disabled={loading}>
           {loading ? "Creating User..." : "Create User"}
